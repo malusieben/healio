@@ -9,12 +9,12 @@ class DataHandler():
         self.file_location = os.path.join(
             os.path.dirname(__file__), 'data', sample_file)
         self.data = None
-        self._load_file()
 
     def _load_file(self):
         self.data = pd.read_excel(self.file_location)
 
     def get_averages(self):
+        self._load_file()
         duration = self.data['duration'].values
 
         if len(duration) == 0:

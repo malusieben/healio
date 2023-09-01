@@ -15,8 +15,9 @@ class WiiBoardSynth():
         # ALLE ONDERDELEN AANROEPEN
         self.audio_mixer = AudioMixer()
         self.wii_board = WiiBoard()
-        self.data_handler = DataHandler('data_malu.xlsx')
-        self.video_player = VideoPlayer('video_v2.mp4')
+        self.data_handler = DataHandler('data_demo.xlsx')
+        self.video_file = 'video_v2.mp4'
+        self.video_player = VideoPlayer(self.video_file)
         self.timer = Timer()
         # INSTELLEN PARAMETERS
         self.balance_threshold = 0.35
@@ -101,6 +102,7 @@ class WiiBoardSynth():
                     print('Time was too short')
             except ValueError:
                 print('Time was zero')
+            self.video_player.stop()
             pygame.mixer.stop()
             pygame.mixer.quit()
 
@@ -110,6 +112,23 @@ class WiiBoardSynth():
     def init_start(self):
         self.video_player.start()
         self.audio_mixer.set_loop_event()
+    
+    def reset(self):
+        del self.audio_mixer
+        # del self.video_player
+        del self.timer
+        self.audio_mixer = AudioMixer()
+        # self.video_player = VideoPlayer(self.video_file)
+        
+        self.timer = Timer()
+        self.balance_threshold = 0.35
+        self.interval_index = 0
+        self.pause = True
+        self.video_volume = 50
+        self.forgiven_time = 2
+        # DATA OPHALEN
+        self.intervals = self.data_handler.get_averages()
+
 
 
 def main():
@@ -119,7 +138,17 @@ def main():
         try:
             wbs.init_start()
             wbs.start()
-            input('Press key to try again...')
+
+
+            user_response = input('Press "y" to try again, press "n" to stop...\n')
+            if user_response == "y":
+                wbs.reset()
+            elif user_response == "n":
+                break
+            else:
+                print('Unknown response, shuting down')
+                break
+            
         except KeyboardInterrupt:
             break
 

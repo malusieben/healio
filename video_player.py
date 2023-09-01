@@ -20,6 +20,10 @@ class VideoPlayer():
 
     def set_volume(self, volume):
         self.media_player.audio_set_volume(volume)
+    
+    def stop(self):
+        self.media_player.stop()
+        
 
 
 if __name__ == "__main__":
